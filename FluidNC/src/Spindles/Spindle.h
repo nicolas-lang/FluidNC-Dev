@@ -71,7 +71,6 @@ namespace Spindles {
         bool _off_on_alarm = false;
         
         // ATC Stuff
-        virtual void atc_init() {}  //
         virtual void activate();    //
         virtual void deactivate();  //
 
