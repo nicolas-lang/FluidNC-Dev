@@ -206,6 +206,57 @@ namespace Configuration {
         }
     }
 
+    //custom
+    void RuntimeSetting::item(const char* name, std::vector<float>& value) {
+        if (is(name)) {
+            isHandled_ = true;
+            if (newValue_ == nullptr) {
+                if (value.size() == 0) {
+                    log_string(out_, "None");
+                } else {
+                    LogStream msg(out_, "");
+                    msg << setting_prefix();
+                    const char* separator = "";
+                    for (float n : value) {
+                        out_ << separator;
+                        out_ << n;
+                        separator = " ";
+                    }
+                }
+                // The destructor sends the line when msg goes out of scope
+            } else {
+                // It is distasteful to have this code that essentially duplicates
+                // Parser.cpp speedEntryValue(), albeit using String instead of
+                // StringRange.  It would be better to have a single String version,
+                // then pass it StringRange.str()
+                std::string        newStr(newValue_);
+                std::vector<float> smValue;
+                while (newStr.length()) {
+                    float  entry;
+                    std::string entryStr;
+                    auto   i = newStr.find(' ');
+                    if (i != std::string::npos) {
+                        entryStr = newStr.substr(0, i);
+                        newStr   = newStr.substr(i + 1);
+                    } else {
+                        entryStr = newStr;
+                        newStr   = "";
+                    }
+                    char* floatEnd;
+                    entry = float(strtod(entryStr.c_str(), &floatEnd));
+                    Assert(entryStr.length() == (floatEnd - entryStr.c_str()), "Bad float value");
+
+                    smValue.push_back(entry);
+                }
+                value = smValue;
+
+                if (!value.size())
+                    log_info("Using default value");
+                return;
+            }
+        }
+    }
+
     void RuntimeSetting::item(const char* name, IPAddress& value) {
         if (is(name)) {
             isHandled_ = true;
