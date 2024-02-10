@@ -26,8 +26,10 @@ namespace Spindles {
             if (candidate != spindle) {
                 if (spindle != nullptr) {
                     spindle->stop();
+                    spindle->deactivate();
                 }
                 spindle = candidate;
+                spindle->activate();
             }
         } else {
             if (spindle == nullptr) {
@@ -39,6 +41,7 @@ namespace Spindles {
             }
         }
         log_info("Using spindle " << spindle->name());
+        spindle->tool_change(new_tool, false);
     }
 
     bool Spindle::isRateAdjusted() {
