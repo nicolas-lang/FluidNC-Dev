@@ -71,8 +71,8 @@ namespace Spindles {
         bool _off_on_alarm = false;
         
         // ATC Stuff
-        virtual void activate();    //
-        virtual void deactivate();  //
+        virtual void activate() {};    //
+        virtual void deactivate() {};  //
 
         // preselect is used to notify the ATC of a pending tool change in case the ATC can prepare
         // for the futute M6.  This is done with M61, which is not parsed yet.
