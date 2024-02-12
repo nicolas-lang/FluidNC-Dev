@@ -68,6 +68,21 @@ namespace Configuration {
             }
         }
 
+        void item(const char* name, std::vector<float>& value) {
+            if (value.size() == 0) {
+                send_item(name, "None");
+            } else {
+                std::ostringstream s;
+                s.precision(2);
+                const char* separator = "";
+                for (float n : value) {
+                    s << separator << n;
+                    separator = " ";
+                }                
+                send_item(name, s.str());
+            }
+        }
+
         void item(const char* name, UartData& wordLength, UartParity& parity, UartStop& stopBits) override {
             std::string s;
             s += std::to_string(int(wordLength) - int(UartData::Bits5) + 5);

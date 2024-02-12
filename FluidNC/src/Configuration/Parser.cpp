@@ -132,6 +132,33 @@ namespace Configuration {
         return speed_entries;
     }
 
+    std::vector<float> Parser::floatArray() const {
+        auto str = string_util::trim(_token._value);
+
+        std::vector<float> value;
+        while (!str.empty()) {
+            auto next_ws_delim = str.find(' ');
+            auto entry_str     = string_util::trim(str.substr(0, next_ws_delim));
+           if (next_ws_delim == std::string::npos) {
+                next_ws_delim = str.length();
+            } else {
+                next_ws_delim += 1;
+            }
+            str.remove_prefix(next_ws_delim);
+            float float_value;
+            if (string_util::is_float(entry_str, float_value)) {
+                value.push_back(float_value);
+            } else {
+                log_error("Bad number " << entry_str);
+                value.clear();
+                break;
+            }
+        }
+        if (!value.size())
+            log_info("Using default value");
+        return value;
+    }
+
     Pin Parser::pinValue() const { return Pin::create(string_util::trim(_token._value)); }
 
     IPAddress Parser::ipValue() const {
