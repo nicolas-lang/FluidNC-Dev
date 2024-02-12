@@ -346,6 +346,7 @@ GCUpdatePos mc_probe_cycle(float* target, plan_line_data_t* pl_data, bool away, 
         report_probe_parameters(allChannels);
     }
     if (probe_succeeded) {
+        spindle->probe_notification();
         if (offset != __FLT_MAX__) {
             float coord_data[MAX_N_AXIS];
             float probe_contact[MAX_N_AXIS];
