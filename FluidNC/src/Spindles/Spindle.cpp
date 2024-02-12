@@ -8,6 +8,8 @@
 
 #include "../System.h"  //sys.spindle_speed_ovr
 #include <esp32-hal.h>  // delay()
+#include "../Uart.h"    // Uart0
+
 
 Spindles::Spindle* spindle = nullptr;
 
@@ -26,8 +28,10 @@ namespace Spindles {
             if (candidate != spindle) {
                 if (spindle != nullptr) {
                     spindle->stop();
+                    spindle->deactivate();
                 }
                 spindle = candidate;
+                spindle->activate();
             }
         } else {
             if (spindle == nullptr) {
@@ -39,6 +43,7 @@ namespace Spindles {
             }
         }
         log_info("Using spindle " << spindle->name());
+        spindle->tool_change(new_tool, false);
     }
 
     bool Spindle::isRateAdjusted() {
@@ -213,5 +218,33 @@ namespace Spindles {
         }
         _current_state = state;
         _current_speed = speed;
+    }
+
+    void Spindle::activate() {
+        log_info(name() << ":Tool activated");
+        applyOffset(true);
+    }
+
+    void Spindle::deactivate() {
+        applyOffset(false);
+        log_info(name() << ":Tool deactivated");
+    }
+
+    void Spindle::applyOffset(bool activating) {
+        log_debug("Spindle.cpp apply offset:" << activating);
+        if (_offset.size() < 2) {
+            return;
+        }
+
+        log_debug("applyOffset: " << "G10 L2 P0 X135.750 Y88.500");
+        //protocol_buffer_synchronize();  // wait for all previous moves to complete
+        gc_exec_linef(true, "G10 L2 P0 X135.750 Y88.500");
+
+        // for (int axis = 0; axis < 2; axis++) {
+        //     offset = activating ? -_offset.at(axis) : _offset.at(axis);
+        //     log_debug("coord:" << gc_state.coord_system[axis] << " Offset:" << offset);            
+        //     gc_state.coord_system[axis] += offset;
+        // }
+
     }
 }

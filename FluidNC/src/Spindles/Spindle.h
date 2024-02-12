@@ -64,11 +64,21 @@ namespace Spindles {
         uint32_t _spindown_ms = 0;
 
         int _tool = -1;
+        std::vector<float> _offset;
 
         std::vector<Configuration::speedEntry> _speeds;
 
         bool _off_on_alarm = false;
+        
+        // ATC Stuff
+        virtual void atc_init() {}  //
+        virtual void activate();    //
+        virtual void deactivate();  //
 
+        // preselect is used to notify the ATC of a pending tool change in case the ATC can prepare
+        // for the futute M6.  This is done with M61, which is not parsed yet.
+        virtual bool tool_change(uint8_t new_tool, bool pre_select) { return true; }
+        virtual void probe_notification() {};
         // Name is required for the configuration factory to work.
         virtual const char* name() const = 0;
 
@@ -91,6 +101,9 @@ namespace Spindles {
 
         // Virtual base classes require a virtual destructor.
         virtual ~Spindle() {}
+    protected:
+        uint8_t current_tool = 0;
+        virtual void applyOffset(bool activating);
     };
     using SpindleFactory = Configuration::GenericFactory<Spindle>;
 }
