@@ -25,6 +25,7 @@ namespace Spindles {
         }
         setupSpeeds(1);
         config_message();
+        atc_init();  // in case an ATC is defined
     }
 
     // prints the startup message of the spindle config
