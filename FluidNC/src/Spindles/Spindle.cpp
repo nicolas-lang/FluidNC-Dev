@@ -8,7 +8,6 @@
 
 #include "../System.h"  //sys.spindle_speed_ovr
 #include <esp32-hal.h>  // delay()
-#include "../Uart.h"    // Uart0
 
 
 Spindles::Spindle* spindle = nullptr;
