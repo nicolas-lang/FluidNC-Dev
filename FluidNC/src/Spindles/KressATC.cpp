@@ -293,13 +293,11 @@ namespace Spindles {
 
         // Was probe successful?
         if (sys.state == State::Alarm) {
-            /*
-            if (rtAlarm == ExecAlarm::ProbeFailInitial) {
+            if (lastAlarm == ExecAlarm::ProbeFailInitial) {
                 log_info("ATC Probe Switch Error");
             } else {
                 log_info("ATC Missing Tool");
             }
-            */
             return false;  // fail
         }
 
