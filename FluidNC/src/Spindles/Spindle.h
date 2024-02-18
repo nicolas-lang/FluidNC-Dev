@@ -64,7 +64,6 @@ namespace Spindles {
         uint32_t _spindown_ms = 0;
 
         int _tool = -1;
-        std::vector<float> _offset;
 
         std::vector<Configuration::speedEntry> _speeds;
 
